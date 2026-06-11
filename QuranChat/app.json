@@ -16,11 +16,24 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.ali.storied.QuranChat"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": []
+    "plugins": [],
+    "extra": {
+      "eas": {
+        "projectId": "83450abb-c673-48a3-b771-d5f40c6e7158"
+      }
+    },
+    "owner": "ali.storied",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/83450abb-c673-48a3-b771-d5f40c6e7158"
+    }
   }
 }
