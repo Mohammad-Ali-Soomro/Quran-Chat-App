@@ -14,12 +14,8 @@ import { RootStackParamList } from '../navigation/AppNavigator';
 import { THEME } from '../constants/theme';
 import { getAyahOfTheDay, AyahData } from '../constants/ayahData';
 import { saveBookmark, removeBookmark, isBookmarked } from '../services/bookmarkStorage';
-import { loadMessages } from '../services/chatStorage';
-import AyahCard from '../components/AyahCard';
-import TopicCard from '../components/TopicCard';
-import SuggestionChips from '../components/SuggestionChips';
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
 interface Props {
   navigation: HomeScreenNavigationProp;
@@ -28,16 +24,12 @@ interface Props {
 export default function HomeScreen({ navigation }: Props) {
   const [ayah] = useState<AyahData>(getAyahOfTheDay());
   const [bookmarked, setBookmarked] = useState(false);
-  const [hasHistory, setHasHistory] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       const checkStatus = async () => {
         const bookmarkedStatus = await isBookmarked(ayah.id);
         setBookmarked(bookmarkedStatus);
-
-        const saved = await loadMessages();
-        setHasHistory(saved.length > 1);
       };
       checkStatus();
     }, [ayah.id])
@@ -63,116 +55,71 @@ export default function HomeScreen({ navigation }: Props) {
     }
   };
 
-  const handleSelectPrompt = (prompt: string) => {
-    const isDua = prompt.toLowerCase().includes('dua');
-    navigation.navigate('Chat', {
-      mode: isDua ? 'dua' : 'quran',
-      initialPrompt: prompt,
-      title: isDua ? 'Dua Generator' : 'Quran Q&A',
-    });
-  };
-
   return (
     <SafeAreaView style={styles.safeArea}>
+      {/* Sleek Minimalist Header */}
       <View style={styles.header}>
         <View style={styles.headerRow}>
-          <Text style={styles.headerTitle}>Quran Chat</Text>
-          <TouchableOpacity style={styles.gearButton} activeOpacity={0.7}>
-            <Text style={styles.gearText}>{'\u2699'}</Text>
-          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Quran Study</Text>
+          <View style={styles.streakBadge}>
+            <Text style={styles.streakText}>🔥 3 Days</Text>
+          </View>
         </View>
-        <Text style={styles.subtitle}>As-salamu alaykum</Text>
+        <Text style={styles.subtitle}>As-salamu alaykum. Welcome back.</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Section 1: Ayah of the Day */}
-        <View style={styles.section}>
-          <AyahCard
-            ayah={ayah}
-            onBookmark={handleBookmark}
-            onShare={handleShare}
-            isBookmarked={bookmarked}
-          />
-        </View>
+        {/* Quote Block for Ayah of the Day (Editorial Blockquote style - Cardless) */}
+        <View style={styles.quoteBlock}>
+          <Text style={styles.quoteLabel}>Ayah of the Day</Text>
+          <Text style={styles.arabicText}>{ayah.arabic}</Text>
+          <Text style={styles.translationText}>"{ayah.translation}"</Text>
+          
+          <View style={styles.metaRow}>
+            <Text style={styles.referenceText}>
+              Surah {ayah.surah} ({ayah.surahNumber}:{ayah.ayahNumber})
+            </Text>
+            <View style={styles.tagContainer}>
+              <Text style={styles.tagText}>{ayah.theme}</Text>
+            </View>
+          </View>
 
-        {/* Section 2: Explore Topics */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Explore Topics</Text>
-          <View style={styles.grid}>
-            <TopicCard
-              title="Quran Q&A"
-              subtitle="Ask anything about the Quran"
-              color="#E8F5E9"
-              onPress={() => navigation.navigate('Chat', { mode: 'quran', title: 'Quran Q&A' })}
-            />
-            <TopicCard
-              title="Dua for Me"
-              subtitle="Get personalized prayers"
-              color="#FFF9C4"
-              onPress={() => navigation.navigate('Chat', { mode: 'dua', title: 'Dua Generator' })}
-            />
-            <TopicCard
-              title="Explain a Surah"
-              subtitle="Deep dive into any Surah"
-              color="#E3F2FD"
-              onPress={() => navigation.navigate('Chat', { mode: 'surah', title: 'Surah Explorer' })}
-            />
-            <TopicCard
-              title="Islamic History"
-              subtitle="Stories of Prophets and events"
-              color="#FFE0E0"
-              onPress={() => navigation.navigate('Chat', { mode: 'history', title: 'Islamic History' })}
-            />
+          <View style={styles.actionRow}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={handleBookmark}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.actionButtonText, bookmarked && styles.actionButtonTextActive]}>
+                {bookmarked ? '★ Bookmarked' : '☆ Bookmark'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton} onPress={handleShare} activeOpacity={0.7}>
+              <Text style={styles.actionButtonText}>🔗 Share</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Section 3: Read & Study Quran */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Read & Study</Text>
+        {/* Major Study Quran Action Row (List-based - Cardless) */}
+        <View style={styles.studySection}>
           <TouchableOpacity
-            style={styles.studyCard}
+            style={styles.studyButton}
             onPress={() => navigation.navigate('SurahList')}
-            activeOpacity={0.85}
+            activeOpacity={0.7}
           >
-            <View style={styles.studyCardLeft}>
-              <Text style={styles.studyCardTitle}>Quran Reader & Tafsir</Text>
-              <Text style={styles.studyCardSubtitle}>
-                Browse all 114 Surahs, read translations, and view detailed exegesis
+            <View style={styles.studyIconContainer}>
+              <Text style={styles.studyIcon}>📖</Text>
+            </View>
+            <View style={styles.studyButtonContent}>
+              <Text style={styles.studyTitle}>Read the Holy Quran</Text>
+              <Text style={styles.studySubtitle}>
+                Explore chapters, translations, and classical commentary inline
               </Text>
             </View>
-            <View style={styles.studyCardButton}>
-              <Text style={styles.studyCardArrow}>{'\u2192'}</Text>
-            </View>
+            <Text style={styles.studyArrow}>{'\u203A'}</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Section 4: Quick Questions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Questions</Text>
-          <SuggestionChips
-            suggestions={[
-              'What is Surah Al-Fatiha about?',
-              'Explain Ayat al-Kursi',
-              'What does the Quran say about patience?',
-              'Tell me about Prophet Yusuf',
-              'Dua for anxiety and stress',
-              'What are the five pillars of Islam?',
-            ]}
-            onSelect={handleSelectPrompt}
-          />
-        </View>
-
-        {/* Section 5: Continue Chatting */}
-        {hasHistory && (
-          <TouchableOpacity
-            style={styles.continueCard}
-            onPress={() => navigation.navigate('Chat', {})}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.continueText}>Continue your last conversation</Text>
-            <Text style={styles.continueArrow}>{'\u2192'}</Text>
-          </TouchableOpacity>
-        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -181,12 +128,15 @@ export default function HomeScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: '#FFFFFF',
   },
   header: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
     paddingTop: 16,
-    paddingBottom: 8,
+    paddingBottom: 16,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F3F5',
   },
   headerRow: {
     flexDirection: 'row',
@@ -195,111 +145,140 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 22,
-    fontWeight: THEME.typography.fontWeightBlack,
+    fontWeight: THEME.typography.fontWeightBold,
     color: THEME.colors.primary,
   },
-  gearButton: {
-    padding: 4,
+  streakBadge: {
+    backgroundColor: '#FFF2E0',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
   },
-  gearText: {
-    fontSize: 22,
-    color: THEME.colors.primary,
+  streakText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FF9600',
   },
   subtitle: {
-    fontSize: 14,
-    fontWeight: THEME.typography.fontWeightRegular,
-    color: '#888888',
-    marginTop: 2,
+    fontSize: 13,
+    color: '#666666',
+    marginTop: 4,
   },
   scrollContent: {
     paddingBottom: 32,
   },
-  section: {
-    marginTop: 24,
+  quoteBlock: {
+    marginHorizontal: 24,
+    marginTop: 28,
+    marginBottom: 24,
+    paddingLeft: 20,
+    borderLeftWidth: 3,
+    borderLeftColor: THEME.colors.accent,
+    alignItems: 'stretch',
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: THEME.typography.fontWeightBlack,
+  quoteLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    color: '#888888',
+    marginBottom: 14,
+  },
+  arabicText: {
+    fontSize: 22,
+    lineHeight: 38,
     color: THEME.colors.primary,
-    paddingHorizontal: 16,
+    textAlign: 'right',
+    marginBottom: 14,
+  },
+  translationText: {
+    fontSize: 15,
+    lineHeight: 24,
+    color: '#333333',
+    textAlign: 'left',
+    fontStyle: 'italic',
+    marginBottom: 12,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
     marginBottom: 16,
   },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    paddingHorizontal: 16,
-    justifyContent: 'center',
+  referenceText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: THEME.colors.accentBlue,
   },
-  studyCard: {
-    backgroundColor: THEME.colors.accentYellow,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
-    padding: 20,
-    marginHorizontal: 16,
+  tagContainer: {
+    backgroundColor: THEME.colors.accentLight,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  tagText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: THEME.colors.accent,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    gap: 20,
+    marginTop: 4,
+  },
+  actionButton: {
+    paddingVertical: 4,
+  },
+  actionButtonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: THEME.colors.accentBlue,
+  },
+  actionButtonTextActive: {
+    color: THEME.colors.accent,
+  },
+  studySection: {
+    marginHorizontal: 24,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F3F5',
+    paddingTop: 24,
+  },
+  studyButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    shadowColor: THEME.borders.color,
-    shadowOffset: { width: 4, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 4,
+    paddingVertical: 12,
   },
-  studyCardLeft: {
+  studyIconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: THEME.colors.accentLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  studyIcon: {
+    fontSize: 20,
+  },
+  studyButtonContent: {
     flex: 1,
     paddingRight: 12,
   },
-  studyCardTitle: {
-    fontSize: 16,
-    fontWeight: THEME.typography.fontWeightBlack,
+  studyTitle: {
+    fontSize: 15,
+    fontWeight: '700',
     color: THEME.colors.primary,
-    marginBottom: 6,
+    marginBottom: 4,
   },
-  studyCardSubtitle: {
+  studySubtitle: {
     fontSize: 12,
-    fontWeight: THEME.typography.fontWeightRegular,
-    color: '#333333',
+    color: '#666666',
     lineHeight: 16,
   },
-  studyCardButton: {
-    width: 36,
-    height: 36,
-    backgroundColor: THEME.colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  studyCardArrow: {
-    fontSize: 18,
-    fontWeight: '900',
-    color: '#FFFFFF',
-  },
-  continueCard: {
-    backgroundColor: THEME.colors.surface,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
-    padding: 16,
-    marginHorizontal: 16,
-    marginTop: 32,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    shadowColor: THEME.borders.color,
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
-  },
-  continueText: {
-    fontSize: 14,
-    fontWeight: THEME.typography.fontWeightBold,
-    color: THEME.colors.primary,
-  },
-  continueArrow: {
-    fontSize: 18,
-    fontWeight: THEME.typography.fontWeightBold,
-    color: THEME.colors.primary,
+  studyArrow: {
+    fontSize: 24,
+    color: '#C7C7CC',
+    fontWeight: '300',
   },
 });

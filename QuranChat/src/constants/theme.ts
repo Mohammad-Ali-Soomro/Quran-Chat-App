@@ -1,25 +1,25 @@
 export const THEME = {
   colors: {
-    background: '#FAFAF0',
+    background: '#F7F9FA', // Clean, soft light background
     surface: '#FFFFFF',
-    primary: '#0D0D0D',
-    accent: '#1B6B3A',
-    accentLight: '#E8F5E9',
-    accentYellow: '#FFD60A',
-    accentCoral: '#FF6B6B',
-    accentBlue: '#4361EE',
-    userBubble: '#1B6B3A',
+    primary: '#1A1A1A', // Charcoal text for readability
+    accent: '#58CC02', // Friendly green
+    accentLight: '#EAF7E2', // Very soft green tint
+    accentYellow: '#FFC800', // Highlight yellow
+    accentCoral: '#FF4B4B', // Error/Badge red
+    accentBlue: '#1CB0F6', // Chat blue
+    userBubble: '#1CB0F6', // iOS style blue bubble
     userBubbleText: '#FFFFFF',
-    aiBubble: '#FFFFFF',
-    aiBubbleText: '#0D0D0D',
+    aiBubble: '#F1F3F4', // Soft gray bubble
+    aiBubbleText: '#1A1A1A',
     inputBackground: '#FFFFFF',
-    placeholder: '#888888',
-    headerBackground: '#1B6B3A',
-    headerText: '#FFFFFF',
-    chipBackground: '#FFD60A',
-    chipText: '#0D0D0D',
-    cardBorder: '#0D0D0D',
-    error: '#D62828',
+    placeholder: '#A0AAB2',
+    headerBackground: '#FFFFFF',
+    headerText: '#1A1A1A',
+    chipBackground: '#F1F3F4',
+    chipText: '#3C3C3C',
+    cardBorder: '#E5E9EB', // Thin, elegant gray divider
+    error: '#FF4B4B',
   },
   typography: {
     fontSizeSmall: 12,
@@ -41,23 +41,23 @@ export const THEME = {
     xxl: 48,
   },
   borders: {
-    width: 2,
-    radius: 0,
-    color: '#0D0D0D',
+    width: 1,
+    radius: 12, // Modern rounded corners
+    color: '#E5E9EB',
   },
   shadows: {
     hard: {
-      shadowColor: '#0D0D0D',
-      shadowOffset: { width: 3, height: 3 },
-      shadowOpacity: 1,
-      shadowRadius: 0,
-      elevation: 4,
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 3,
+      elevation: 1,
     },
     soft: {
-      shadowColor: '#0D0D0D',
-      shadowOffset: { width: 2, height: 2 },
-      shadowOpacity: 0.6,
-      shadowRadius: 0,
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.06,
+      shadowRadius: 8,
       elevation: 2,
     },
   },

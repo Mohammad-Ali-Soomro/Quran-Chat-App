@@ -34,9 +34,9 @@ export default function WelcomeScreen({ navigation }: Props) {
   const handleStart = async () => {
     try {
       await AsyncStorage.setItem('has_onboarded', 'true');
-      navigation.replace('Home');
+      navigation.replace('Tabs');
     } catch {
-      navigation.replace('Home');
+      navigation.replace('Tabs');
     }
   };
 
@@ -56,11 +56,13 @@ export default function WelcomeScreen({ navigation }: Props) {
           {/* Decorative bar */}
           <View style={styles.divider} />
 
-          {/* Feature Cards */}
-          <View style={styles.cardsContainer}>
+          {/* Feature List (Cardless) */}
+          <View style={styles.featuresList}>
             {/* Feature 1 */}
-            <View style={styles.featureCard}>
-              <View style={[styles.iconBox, { backgroundColor: THEME.colors.accent }]} />
+            <View style={styles.featureItem}>
+              <View style={[styles.iconBadge, { backgroundColor: THEME.colors.accentLight }]}>
+                <Text style={styles.iconEmoji}>💬</Text>
+              </View>
               <View style={styles.featureTextContainer}>
                 <Text style={styles.featureTitle}>Ask about any Surah or Ayah</Text>
                 <Text style={styles.featureSubtitle}>Get authentic scholarly answers with verse references</Text>
@@ -68,8 +70,10 @@ export default function WelcomeScreen({ navigation }: Props) {
             </View>
 
             {/* Feature 2 */}
-            <View style={styles.featureCard}>
-              <View style={[styles.iconBox, { backgroundColor: THEME.colors.accentYellow }]} />
+            <View style={styles.featureItem}>
+              <View style={[styles.iconBadge, { backgroundColor: '#FFF2E0' }]}>
+                <Text style={styles.iconEmoji}>🤲</Text>
+              </View>
               <View style={styles.featureTextContainer}>
                 <Text style={styles.featureTitle}>Generate personalized Duas</Text>
                 <Text style={styles.featureSubtitle}>Describe your situation and receive relevant prayers</Text>
@@ -77,8 +81,10 @@ export default function WelcomeScreen({ navigation }: Props) {
             </View>
 
             {/* Feature 3 */}
-            <View style={styles.featureCard}>
-              <View style={[styles.iconBox, { backgroundColor: THEME.colors.accentBlue }]} />
+            <View style={styles.featureItem}>
+              <View style={[styles.iconBadge, { backgroundColor: '#E0F2FE' }]}>
+                <Text style={styles.iconEmoji}>📜</Text>
+              </View>
               <View style={styles.featureTextContainer}>
                 <Text style={styles.featureTitle}>Explore themes and stories</Text>
                 <Text style={styles.featureSubtitle}>Dive into Islamic history, morals, and teachings</Text>
@@ -87,15 +93,13 @@ export default function WelcomeScreen({ navigation }: Props) {
           </View>
 
           {/* Start Button */}
-          <View style={styles.buttonShadow}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handleStart}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.buttonText}>Start Exploring</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleStart}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.buttonText}>Start Exploring</Text>
+          </TouchableOpacity>
         </Animated.View>
       </ScrollView>
     </SafeAreaView>
@@ -105,12 +109,12 @@ export default function WelcomeScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: '#FFFFFF',
   },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 28,
     paddingVertical: 32,
   },
   content: {
@@ -144,31 +148,26 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.colors.accent,
     alignSelf: 'center',
     marginBottom: 32,
+    borderRadius: 2,
   },
-  cardsContainer: {
-    gap: 16,
-    marginBottom: 40,
+  featuresList: {
+    gap: 24,
+    marginBottom: 44,
   },
-  featureCard: {
-    backgroundColor: THEME.colors.surface,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
-    padding: 16,
+  featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
-    shadowColor: THEME.borders.color,
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
   },
-  iconBox: {
-    width: 24,
-    height: 24,
-    borderWidth: 1.5,
-    borderColor: THEME.borders.color,
+  iconBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconEmoji: {
+    fontSize: 20,
   },
   featureTextContainer: {
     flex: 1,
@@ -185,15 +184,10 @@ const styles = StyleSheet.create({
     color: '#666666',
     lineHeight: 16,
   },
-  buttonShadow: {
-    ...THEME.shadows.hard,
-  },
   button: {
     backgroundColor: THEME.colors.accent,
-    paddingVertical: 18,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
+    paddingVertical: 16,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },

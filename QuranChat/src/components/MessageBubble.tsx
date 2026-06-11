@@ -66,12 +66,12 @@ export default function MessageBubble({ message, isUser, isLoading }: MessageBub
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 250,
         useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 300,
+        duration: 250,
         useNativeDriver: true,
       }),
     ]).start();
@@ -106,30 +106,27 @@ export default function MessageBubble({ message, isUser, isLoading }: MessageBub
 
 const styles = StyleSheet.create({
   bubble: {
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 16,
-    marginVertical: 8,
+    marginVertical: 4,
     marginHorizontal: 16,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
-    ...THEME.shadows.hard,
+    borderRadius: 18, // Rounded bubble
   },
   userBubble: {
     alignSelf: 'flex-end',
     backgroundColor: THEME.colors.userBubble,
+    borderBottomRightRadius: 4, // tail effect
     maxWidth: SCREEN_WIDTH * 0.75,
   },
   aiBubble: {
     alignSelf: 'flex-start',
     backgroundColor: THEME.colors.aiBubble,
+    borderBottomLeftRadius: 4, // tail effect
     maxWidth: SCREEN_WIDTH * 0.8,
-    borderLeftWidth: 6,
-    borderLeftColor: THEME.colors.accent,
   },
   messageText: {
     fontSize: THEME.typography.fontSizeBody,
-    lineHeight: 22,
+    lineHeight: 21,
     fontWeight: THEME.typography.fontWeightRegular,
   },
   userText: {
@@ -142,14 +139,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 4,
-    width: 50,
+    gap: 5,
+    paddingVertical: 6,
+    width: 44,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: THEME.colors.accent,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#9A9A9A',
   },
 });

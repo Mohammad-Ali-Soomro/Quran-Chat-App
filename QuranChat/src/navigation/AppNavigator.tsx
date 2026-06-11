@@ -11,10 +11,12 @@ import HomeScreen from '../screens/HomeScreen';
 import ChatScreen from '../screens/ChatScreen';
 import SurahListScreen from '../screens/SurahListScreen';
 import SurahReaderScreen from '../screens/SurahReaderScreen';
+import MainTabsScreen from '../screens/MainTabsScreen';
 
 export type RootStackParamList = {
   Onboarding: undefined;
   Home: undefined;
+  Tabs: undefined;
   Chat: { mode?: ChatMode; initialPrompt?: string; title?: string };
   SurahList: undefined;
   SurahReader: { chapterId: number; chapterName: string };
@@ -51,10 +53,11 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={hasOnboarded ? 'Home' : 'Onboarding'}
+        initialRouteName={hasOnboarded ? 'Tabs' : 'Onboarding'}
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="Onboarding" component={WelcomeScreen} />
+        <Stack.Screen name="Tabs" component={MainTabsScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
         <Stack.Screen name="SurahList" component={SurahListScreen} />

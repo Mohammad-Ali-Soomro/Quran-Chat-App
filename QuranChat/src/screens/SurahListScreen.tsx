@@ -8,7 +8,6 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { THEME } from '../constants/theme';
@@ -83,33 +82,41 @@ export default function SurahListScreen({ navigation }: Props) {
     const isMeccan = item.revelation_place === 'makkah';
     return (
       <TouchableOpacity
-        style={styles.card}
+        style={styles.rowItem}
         onPress={() => navigation.navigate('SurahReader', { chapterId: item.id, chapterName: item.name_simple })}
-        activeOpacity={0.85}
+        activeOpacity={0.7}
       >
-        <View style={styles.cardLeft}>
-          <View style={styles.numberBadge}>
+        <View style={styles.rowLeft}>
+          <View style={styles.numberCircle}>
             <Text style={styles.numberText}>{item.id}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.englishName}>{item.name_simple}</Text>
-            <Text style={styles.translatedName}>{item.translated_name.name}</Text>
-            
             <View style={styles.metaRow}>
+              <Text style={styles.translatedName}>{item.translated_name.name}</Text>
+              <Text style={styles.bullet}>•</Text>
               <View
                 style={[
                   styles.badge,
-                  { backgroundColor: isMeccan ? '#FFE0E0' : '#E3F2FD' },
+                  { backgroundColor: isMeccan ? '#FFEBEB' : '#E0F2FE' },
                 ]}
               >
-                <Text style={styles.badgeText}>{isMeccan ? 'Meccan' : 'Medinan'}</Text>
+                <Text
+                  style={[
+                    styles.badgeText,
+                    { color: isMeccan ? '#FF4B4B' : '#0284C7' },
+                  ]}
+                >
+                  {isMeccan ? 'Meccan' : 'Medinan'}
+                </Text>
               </View>
+              <Text style={styles.bullet}>•</Text>
               <Text style={styles.metaText}>{item.verses_count} verses</Text>
             </View>
           </View>
         </View>
         
-        <View style={styles.cardRight}>
+        <View style={styles.rowRight}>
           <Text style={styles.arabicName}>{item.name_arabic}</Text>
         </View>
       </TouchableOpacity>
@@ -138,8 +145,8 @@ export default function SurahListScreen({ navigation }: Props) {
       
       {isLoading ? (
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color={THEME.colors.accent} />
-          <Text style={styles.loadingText}>Loading Holy Quran chapters...</Text>
+          <ActivityIndicator size="large" color={THEME.colors.accentBlue} />
+          <Text style={styles.loadingText}>Loading Surahs...</Text>
         </View>
       ) : error ? (
         <View style={styles.centerContainer}>
@@ -154,6 +161,7 @@ export default function SurahListScreen({ navigation }: Props) {
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderSurahItem}
           contentContainerStyle={styles.listContent}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
@@ -169,113 +177,102 @@ export default function SurahListScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: '#FFFFFF',
   },
   searchSection: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 8,
+    backgroundColor: '#FFFFFF',
   },
   searchInput: {
-    backgroundColor: THEME.colors.surface,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
+    backgroundColor: '#F1F3F4',
+    borderWidth: 1,
+    borderColor: '#E5E9EB',
+    borderRadius: 20,
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 15,
+    paddingVertical: 10,
+    fontSize: 14,
     color: THEME.colors.primary,
-    shadowColor: THEME.borders.color,
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 2,
   },
   listContent: {
-    padding: 16,
+    paddingHorizontal: 20,
     paddingBottom: 32,
   },
-  card: {
-    backgroundColor: THEME.colors.surface,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
-    padding: 16,
+  rowItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12,
-    shadowColor: THEME.borders.color,
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
+    paddingVertical: 16,
+    backgroundColor: '#FFFFFF',
   },
-  cardLeft: {
+  rowLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
   },
-  numberBadge: {
-    width: 32,
-    height: 32,
-    backgroundColor: THEME.colors.primary,
-    borderWidth: 1.5,
-    borderColor: THEME.colors.primary,
+  numberCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#F1F3F4',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 16,
   },
   numberText: {
     fontSize: 13,
-    fontWeight: THEME.typography.fontWeightBold,
-    color: '#FFFFFF',
+    fontWeight: '700',
+    color: '#555555',
   },
   infoContainer: {
     flex: 1,
   },
   englishName: {
-    fontSize: 16,
-    fontWeight: THEME.typography.fontWeightBold,
+    fontSize: 15,
+    fontWeight: '700',
     color: THEME.colors.primary,
-  },
-  translatedName: {
-    fontSize: 12,
-    fontWeight: THEME.typography.fontWeightRegular,
-    color: '#666666',
-    marginTop: 2,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 6,
-    gap: 8,
+    marginTop: 4,
+  },
+  translatedName: {
+    fontSize: 11,
+    color: '#666666',
+  },
+  bullet: {
+    fontSize: 8,
+    color: '#AFAFAF',
+    marginHorizontal: 6,
   },
   badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderWidth: 1,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 8,
   },
   badgeText: {
-    fontSize: 10,
-    fontWeight: THEME.typography.fontWeightBold,
-    color: THEME.colors.primary,
+    fontSize: 9,
+    fontWeight: '700',
   },
   metaText: {
     fontSize: 11,
-    color: '#888888',
+    color: '#666666',
   },
-  cardRight: {
+  rowRight: {
     alignItems: 'flex-end',
     justifyContent: 'center',
     paddingLeft: 8,
   },
   arabicName: {
     fontSize: 18,
-    fontWeight: THEME.typography.fontWeightBold,
+    fontWeight: '700',
     color: THEME.colors.primary,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: THEME.colors.cardBorder,
   },
   centerContainer: {
     flex: 1,
@@ -298,18 +295,11 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.colors.primary,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderWidth: 2,
-    borderColor: THEME.borders.color,
-    shadowColor: THEME.borders.color,
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 2,
+    borderRadius: 10,
   },
   retryButtonText: {
     color: '#FFFFFF',
-    fontWeight: THEME.typography.fontWeightBold,
-    fontSize: 13,
+    fontWeight: '700',
   },
   emptyContainer: {
     paddingVertical: 40,

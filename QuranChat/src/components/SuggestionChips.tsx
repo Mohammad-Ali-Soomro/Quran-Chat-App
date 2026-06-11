@@ -31,7 +31,7 @@ function SuggestionChip({ text, onPress }: { text: string; onPress: () => void }
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        activeOpacity={0.9}
+        activeOpacity={0.8}
       >
         <Text style={styles.chipText}>{text}</Text>
       </TouchableOpacity>
@@ -60,25 +60,20 @@ export default function SuggestionChips({ suggestions, onSelect }: SuggestionChi
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 10,
   },
   chip: {
-    backgroundColor: THEME.colors.accentYellow,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    marginRight: 10,
-    shadowColor: THEME.borders.color,
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 2,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: THEME.colors.cardBorder,
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    marginRight: 8,
   },
   chipText: {
-    fontSize: 13,
-    fontWeight: THEME.typography.fontWeightBold,
-    color: THEME.colors.primary,
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#555555',
   },
 });

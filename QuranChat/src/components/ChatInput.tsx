@@ -33,7 +33,7 @@ export default function ChatInput({ onSend, disabled, placeholder = 'Ask about t
 
   const handlePressIn = () => {
     Animated.spring(scaleValue, {
-      toValue: 0.95,
+      toValue: 0.9,
       useNativeDriver: true,
     }).start();
   };
@@ -65,7 +65,6 @@ export default function ChatInput({ onSend, disabled, placeholder = 'Ask about t
       />
       <Animated.View
         style={[
-          sendDisabled ? styles.sendWrapperDisabled : styles.sendWrapper,
           { transform: [{ scale: scaleValue }] }
         ]}
       >
@@ -78,9 +77,9 @@ export default function ChatInput({ onSend, disabled, placeholder = 'Ask about t
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           disabled={sendDisabled}
-          activeOpacity={0.9}
+          activeOpacity={0.8}
         >
-          <Text style={styles.sendText}>Send</Text>
+          <Text style={styles.sendText}>{'\u2191'}</Text>
         </TouchableOpacity>
       </Animated.View>
     </View>
@@ -89,53 +88,49 @@ export default function ChatInput({ onSend, disabled, placeholder = 'Ask about t
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: THEME.colors.background,
-    borderTopWidth: THEME.borders.width,
-    borderTopColor: THEME.borders.color,
-    paddingTop: 12,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: THEME.colors.cardBorder,
+    paddingTop: 10,
+    paddingBottom: 10,
     paddingHorizontal: 16,
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
+    alignItems: 'flex-end',
+    gap: 8,
   },
   input: {
     flex: 1,
-    backgroundColor: THEME.colors.surface,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
-    padding: 12,
+    backgroundColor: '#F1F3F4',
+    borderWidth: 1,
+    borderColor: '#E5E9EB',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    paddingTop: 8,
     fontSize: THEME.typography.fontSizeBody,
     color: THEME.colors.primary,
     maxHeight: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: 'center',
   },
   inputFocused: {
-    borderColor: THEME.colors.accent,
-  },
-  sendWrapper: {
-    ...THEME.shadows.hard,
-  },
-  sendWrapperDisabled: {
-    // No shadow when disabled
+    borderColor: THEME.colors.accentBlue,
+    backgroundColor: '#FFFFFF',
   },
   sendButton: {
-    height: 48,
-    paddingHorizontal: 14,
-    backgroundColor: THEME.colors.accent,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: THEME.colors.accentBlue,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 1,
   },
   sendButtonDisabled: {
-    backgroundColor: '#999999',
-    borderColor: THEME.borders.color,
+    backgroundColor: '#E5E9EB',
   },
   sendText: {
-    fontSize: 14,
-    fontWeight: THEME.typography.fontWeightBold,
+    fontSize: 18,
+    fontWeight: '900',
     color: '#FFFFFF',
   },
 });

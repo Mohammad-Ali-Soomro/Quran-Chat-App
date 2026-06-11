@@ -154,12 +154,10 @@ export default function SurahReaderScreen({ navigation, route }: Props) {
     const tafsirText = tafsirContents[verseNum];
 
     return (
-      <View style={styles.verseCard}>
-        {/* Header containing verse key badge */}
+      <View style={styles.verseRow}>
+        {/* Header containing verse key */}
         <View style={styles.verseHeader}>
-          <View style={styles.keyBadge}>
-            <Text style={styles.keyBadgeText}>{item.verse_key}</Text>
-          </View>
+          <Text style={styles.keyText}>{item.verse_key}</Text>
         </View>
 
         {/* Uthmani Arabic Text */}
@@ -172,20 +170,12 @@ export default function SurahReaderScreen({ navigation, route }: Props) {
 
         {/* Tafsir Action Button */}
         <TouchableOpacity
-          style={[
-            styles.tafsirButton,
-            isExpanded && styles.tafsirButtonActive,
-          ]}
+          style={styles.tafsirButton}
           onPress={() => handleToggleTafsir(verseNum)}
-          activeOpacity={0.8}
+          activeOpacity={0.7}
         >
-          <Text
-            style={[
-              styles.tafsirButtonText,
-              isExpanded && styles.tafsirButtonTextActive,
-            ]}
-          >
-            {isExpanded ? 'Hide Tafsir' : 'Tafsir Ibn Kathir'}
+          <Text style={[styles.tafsirButtonText, isExpanded && styles.tafsirButtonTextActive]}>
+            {isExpanded ? 'Hide Commentary' : 'Tafsir Ibn Kathir'}
           </Text>
         </TouchableOpacity>
 
@@ -196,7 +186,7 @@ export default function SurahReaderScreen({ navigation, route }: Props) {
             {isTafsirLoading ? (
               <ActivityIndicator
                 size="small"
-                color={THEME.colors.accent}
+                color={THEME.colors.accentBlue}
                 style={styles.tafsirLoader}
               />
             ) : (
@@ -212,7 +202,7 @@ export default function SurahReaderScreen({ navigation, route }: Props) {
     if (!isLoadingMore) return null;
     return (
       <View style={styles.footerLoader}>
-        <ActivityIndicator size="small" color={THEME.colors.accent} />
+        <ActivityIndicator size="small" color={THEME.colors.accentBlue} />
       </View>
     );
   };
@@ -227,7 +217,7 @@ export default function SurahReaderScreen({ navigation, route }: Props) {
 
       {isLoading && verses.length === 0 ? (
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color={THEME.colors.accent} />
+          <ActivityIndicator size="large" color={THEME.colors.accentBlue} />
           <Text style={styles.loadingText}>Fetching verses...</Text>
         </View>
       ) : error && verses.length === 0 ? (
@@ -247,6 +237,7 @@ export default function SurahReaderScreen({ navigation, route }: Props) {
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderVerseItem}
           contentContainerStyle={styles.listContent}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           showsVerticalScrollIndicator={false}
           onEndReached={loadMoreVerses}
           onEndReachedThreshold={0.5}
@@ -260,92 +251,64 @@ export default function SurahReaderScreen({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: '#FFFFFF',
   },
   listContent: {
-    padding: 16,
     paddingBottom: 40,
   },
-  verseCard: {
-    backgroundColor: THEME.colors.surface,
-    borderWidth: THEME.borders.width,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
-    padding: 20,
-    marginBottom: 20,
-    shadowColor: THEME.borders.color,
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
+  verseRow: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 24,
+    paddingHorizontal: 20,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: THEME.colors.cardBorder,
   },
   verseHeader: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 10,
   },
-  keyBadge: {
-    backgroundColor: THEME.colors.accentLight,
-    borderWidth: 1.5,
-    borderColor: THEME.borders.color,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  keyBadgeText: {
-    fontSize: 10,
-    fontWeight: THEME.typography.fontWeightBold,
-    color: THEME.colors.accent,
+  keyText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#8E8E93',
   },
   arabicText: {
-    fontSize: 24,
+    fontSize: 22,
     color: THEME.colors.primary,
-    lineHeight: 44,
+    lineHeight: 40,
     textAlign: 'right',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   translationText: {
     fontSize: 14,
     color: '#444444',
     lineHeight: 22,
     textAlign: 'left',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   tafsirButton: {
-    borderWidth: 1.5,
-    borderColor: THEME.borders.color,
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
     alignSelf: 'flex-start',
-  },
-  tafsirButtonActive: {
-    backgroundColor: THEME.colors.accent,
-    borderColor: THEME.borders.color,
+    paddingVertical: 4,
   },
   tafsirButtonText: {
     fontSize: 12,
-    fontWeight: THEME.typography.fontWeightBold,
-    color: THEME.colors.primary,
+    fontWeight: '700',
+    color: THEME.colors.accentBlue,
   },
   tafsirButtonTextActive: {
-    color: '#FFFFFF',
+    color: '#8E8E93',
   },
   tafsirBox: {
-    marginTop: 14,
-    padding: 14,
-    backgroundColor: '#E3F2FD', // soft blue tint for Tafsir context
-    borderWidth: 1.5,
-    borderColor: THEME.borders.color,
-    borderRadius: THEME.borders.radius,
-    shadowColor: THEME.borders.color,
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 2,
+    marginTop: 12,
+    paddingLeft: 16,
+    paddingVertical: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: THEME.colors.accentBlue,
   },
   tafsirHeader: {
     fontSize: 12,
-    fontWeight: THEME.typography.fontWeightBold,
+    fontWeight: '700',
     color: THEME.colors.accentBlue,
     marginBottom: 8,
   },
@@ -382,11 +345,10 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.colors.primary,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderWidth: 2,
-    borderColor: THEME.borders.color,
+    borderRadius: 10,
   },
   retryButtonText: {
     color: '#FFFFFF',
-    fontWeight: THEME.typography.fontWeightBold,
+    fontWeight: '700',
   },
 });

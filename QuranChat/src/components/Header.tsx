@@ -45,8 +45,8 @@ export default function Header({ title, onClear, onSettings, showBack, onBack }:
 const styles = StyleSheet.create({
   container: {
     backgroundColor: THEME.colors.headerBackground,
-    borderBottomWidth: 3,
-    borderBottomColor: THEME.colors.accentYellow,
+    borderBottomWidth: 1,
+    borderBottomColor: THEME.colors.cardBorder,
   },
   inner: {
     height: 56,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     fontSize: 22,
-    fontWeight: '900',
+    fontWeight: '700',
     color: THEME.colors.headerText,
   },
   title: {
@@ -81,14 +81,15 @@ const styles = StyleSheet.create({
   clearButton: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    borderWidth: 1.5,
-    borderColor: THEME.colors.headerText,
-    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: THEME.colors.cardBorder,
+    borderRadius: 8,
+    backgroundColor: '#F7F9FA',
   },
   clearText: {
     fontSize: THEME.typography.fontSizeSmall,
     fontWeight: THEME.typography.fontWeightBold,
-    color: THEME.colors.headerText,
+    color: THEME.colors.primary,
   },
   gearText: {
     fontSize: 20,
