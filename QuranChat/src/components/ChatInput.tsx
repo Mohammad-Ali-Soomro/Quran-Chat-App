@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   TextInput,
   TouchableOpacity,
   Text,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { THEME } from '../constants/theme';
@@ -12,11 +13,14 @@ import { THEME } from '../constants/theme';
 interface ChatInputProps {
   onSend: (text: string) => void;
   disabled: boolean;
+  placeholder?: string;
 }
 
-export default function ChatInput({ onSend, disabled }: ChatInputProps) {
+export default function ChatInput({ onSend, disabled, placeholder = 'Ask about the Quran...' }: ChatInputProps) {
   const [input, setInput] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const insets = useSafeAreaInsets();
+  const scaleValue = useRef(new Animated.Value(1)).current;
 
   const trimmed = input.trim();
   const sendDisabled = !trimmed || disabled;
@@ -27,41 +31,67 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
     setInput('');
   };
 
+  const handlePressIn = () => {
+    Animated.spring(scaleValue, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleValue, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
     <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, 12) }]}>
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          isFocused ? styles.inputFocused : null,
+        ]}
         value={input}
         onChangeText={setInput}
-        placeholder="Ask about the Quran..."
-        placeholderTextColor="#888888"
+        placeholder={placeholder}
+        placeholderTextColor={THEME.colors.placeholder}
         multiline={true}
         maxLength={2000}
         editable={!disabled}
         blurOnSubmit={false}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
-      <View style={sendDisabled ? styles.sendWrapperDisabled : styles.sendWrapper}>
+      <Animated.View
+        style={[
+          sendDisabled ? styles.sendWrapperDisabled : styles.sendWrapper,
+          { transform: [{ scale: scaleValue }] }
+        ]}
+      >
         <TouchableOpacity
           style={[
             styles.sendButton,
             sendDisabled && styles.sendButtonDisabled,
           ]}
           onPress={handleSend}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
           disabled={sendDisabled}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
         >
-          <Text style={styles.sendText}>{'\u2192'}</Text>
+          <Text style={styles.sendText}>Send</Text>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FAFAF0',
-    borderTopWidth: 2,
-    borderTopColor: '#0D0D0D',
+    backgroundColor: THEME.colors.background,
+    borderTopWidth: THEME.borders.width,
+    borderTopColor: THEME.borders.color,
     paddingTop: 12,
     paddingHorizontal: 16,
     flexDirection: 'row',
@@ -70,42 +100,42 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: '#0D0D0D',
-    borderRadius: 0,
+    backgroundColor: THEME.colors.surface,
+    borderWidth: THEME.borders.width,
+    borderColor: THEME.borders.color,
+    borderRadius: THEME.borders.radius,
     padding: 12,
-    fontSize: 15,
-    color: '#0D0D0D',
+    fontSize: THEME.typography.fontSizeBody,
+    color: THEME.colors.primary,
     maxHeight: 100,
     textAlignVertical: 'top',
   },
+  inputFocused: {
+    borderColor: THEME.colors.accent,
+  },
   sendWrapper: {
-    shadowColor: '#0D0D0D',
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
+    ...THEME.shadows.hard,
   },
   sendWrapperDisabled: {
     // No shadow when disabled
   },
   sendButton: {
-    width: 48,
     height: 48,
-    backgroundColor: '#0D0D0D',
-    borderWidth: 2,
-    borderColor: '#0D0D0D',
-    borderRadius: 0,
+    paddingHorizontal: 14,
+    backgroundColor: THEME.colors.accent,
+    borderWidth: THEME.borders.width,
+    borderColor: THEME.borders.color,
+    borderRadius: THEME.borders.radius,
     alignItems: 'center',
     justifyContent: 'center',
   },
   sendButtonDisabled: {
-    backgroundColor: '#555555',
-    borderColor: '#555555',
+    backgroundColor: '#999999',
+    borderColor: THEME.borders.color,
   },
   sendText: {
-    fontSize: 20,
-    color: '#FAFAF0',
+    fontSize: 14,
+    fontWeight: THEME.typography.fontWeightBold,
+    color: '#FFFFFF',
   },
 });

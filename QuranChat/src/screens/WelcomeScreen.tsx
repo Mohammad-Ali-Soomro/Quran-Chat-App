@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
-  KeyboardAvoidingView,
+  Animated,
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,116 +14,90 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { THEME } from '../constants/theme';
 
-type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
+type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Onboarding'>;
 
 interface Props {
   navigation: WelcomeScreenNavigationProp;
 }
 
 export default function WelcomeScreen({ navigation }: Props) {
-  const [apiKey, setApiKey] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
 
   const handleStart = async () => {
-    setError('');
-
-    const trimmed = apiKey.trim();
-
-    if (!trimmed) {
-      setError('Please enter your API key.');
-      return;
-    }
-
-    if (!trimmed.startsWith('gsk_')) {
-      setError("That doesn't look like a valid Groq API key.");
-      return;
-    }
-
-    setLoading(true);
-
     try {
-      await AsyncStorage.setItem('groq_api_key', trimmed);
-      navigation.replace('Chat');
+      await AsyncStorage.setItem('has_onboarded', 'true');
+      navigation.replace('Home');
     } catch {
-      setError('Failed to save API key. Please try again.');
-      setLoading(false);
+      navigation.replace('Home');
     }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View style={styles.content}>
-            {/* App Title */}
-            <Text style={styles.title}>Quran Chat</Text>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+          {/* Bismillah */}
+          <Text style={styles.bismillah}>{'\u0628\u0650\u0633\u0652\u0645\u0650 \u0627\u0644\u0644\u0651\u064E\u0647\u0650 \u0627\u0644\u0631\u0651\u064e\u062d\u0652\u0645\u064e\u0670\u0646ِ \u0627\u0644\u0631\u0651ِ\u062dِيمِ'}</Text>
+          
+          {/* App Title */}
+          <Text style={styles.title}>Quran Chat</Text>
 
-            {/* Subtitle */}
-            <Text style={styles.subtitle}>Ask anything about the Quran.</Text>
+          {/* Tagline */}
+          <Text style={styles.tagline}>Your AI companion for exploring the Holy Quran</Text>
 
-            {/* Bismillah */}
-            <Text style={styles.bismillah}>{'\u0628\u0650\u0633\u0652\u0645\u0650 \u0627\u0644\u0644\u0651\u064E\u0647\u0650'}</Text>
+          {/* Decorative bar */}
+          <View style={styles.divider} />
 
-            {/* API Key Section */}
-            <View style={styles.formSection}>
-              <Text style={styles.sectionLabel}>GROQ API KEY</Text>
-
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  style={styles.input}
-                  value={apiKey}
-                  onChangeText={(text) => {
-                    setApiKey(text);
-                    if (error) setError('');
-                  }}
-                  placeholder="gsk_..."
-                  placeholderTextColor={THEME.colors.placeholder}
-                  secureTextEntry={true}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  editable={!loading}
-                />
+          {/* Feature Cards */}
+          <View style={styles.cardsContainer}>
+            {/* Feature 1 */}
+            <View style={styles.featureCard}>
+              <View style={[styles.iconBox, { backgroundColor: THEME.colors.accent }]} />
+              <View style={styles.featureTextContainer}>
+                <Text style={styles.featureTitle}>Ask about any Surah or Ayah</Text>
+                <Text style={styles.featureSubtitle}>Get authentic scholarly answers with verse references</Text>
               </View>
+            </View>
 
-              {/* Error Box */}
-              {error ? (
-                <View style={styles.errorBox}>
-                  <Text style={styles.errorText}>{error}</Text>
-                </View>
-              ) : null}
+            {/* Feature 2 */}
+            <View style={styles.featureCard}>
+              <View style={[styles.iconBox, { backgroundColor: THEME.colors.accentYellow }]} />
+              <View style={styles.featureTextContainer}>
+                <Text style={styles.featureTitle}>Generate personalized Duas</Text>
+                <Text style={styles.featureSubtitle}>Describe your situation and receive relevant prayers</Text>
+              </View>
+            </View>
 
-              {/* Helper Text */}
-              <Text style={styles.helperText}>
-                Your key is stored locally and never sent anywhere except Groq.
-              </Text>
-
-              {/* Start Button */}
-              <View style={styles.buttonShadow}>
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    loading && styles.buttonDisabled,
-                  ]}
-                  onPress={handleStart}
-                  disabled={loading}
-                  activeOpacity={0.85}
-                >
-                  <Text style={styles.buttonText}>
-                    {loading ? '...' : 'Start Chatting'}
-                  </Text>
-                </TouchableOpacity>
+            {/* Feature 3 */}
+            <View style={styles.featureCard}>
+              <View style={[styles.iconBox, { backgroundColor: THEME.colors.accentBlue }]} />
+              <View style={styles.featureTextContainer}>
+                <Text style={styles.featureTitle}>Explore themes and stories</Text>
+                <Text style={styles.featureSubtitle}>Dive into Islamic history, morals, and teachings</Text>
               </View>
             </View>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+
+          {/* Start Button */}
+          <View style={styles.buttonShadow}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleStart}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.buttonText}>Start Exploring</Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -134,127 +107,99 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: THEME.colors.background,
   },
-  flex: {
-    flex: 1,
-  },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    paddingVertical: 40,
+    paddingVertical: 32,
   },
   content: {
-    alignItems: 'center',
+    alignItems: 'stretch',
   },
-
-  // Title
-  title: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: THEME.colors.primary,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-
-  // Subtitle
-  subtitle: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: '#555555',
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-
-  // Bismillah
   bismillah: {
-    fontSize: 20,
+    fontSize: 22,
     color: THEME.colors.accent,
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 8,
+    fontFamily: Platform.OS === 'ios' ? 'Traditional Arabic' : 'sans-serif',
   },
-
-  // Form
-  formSection: {
-    width: '100%',
-  },
-  sectionLabel: {
-    fontSize: 11,
-    fontWeight: '700',
+  title: {
+    fontSize: 32,
+    fontWeight: THEME.typography.fontWeightBlack,
     color: THEME.colors.primary,
-    letterSpacing: 1.5,
+    textAlign: 'center',
     marginBottom: 8,
   },
-
-  // Input
-  inputWrapper: {
-    backgroundColor: THEME.colors.inputBackground,
+  tagline: {
+    fontSize: 14,
+    fontWeight: THEME.typography.fontWeightRegular,
+    color: '#666666',
+    textAlign: 'center',
+    marginBottom: 32,
+    lineHeight: 20,
+  },
+  divider: {
+    width: 60,
+    height: 4,
+    backgroundColor: THEME.colors.accent,
+    alignSelf: 'center',
+    marginBottom: 32,
+  },
+  cardsContainer: {
+    gap: 16,
+    marginBottom: 40,
+  },
+  featureCard: {
+    backgroundColor: THEME.colors.surface,
     borderWidth: THEME.borders.width,
     borderColor: THEME.borders.color,
     borderRadius: THEME.borders.radius,
-    shadowColor: '#0D0D0D',
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    shadowColor: THEME.borders.color,
     shadowOffset: { width: 3, height: 3 },
     shadowOpacity: 1,
     shadowRadius: 0,
-    elevation: 4,
+    elevation: 3,
   },
-  input: {
-    fontSize: THEME.typography.fontSizeBody,
-    fontWeight: THEME.typography.fontWeightRegular,
+  iconBox: {
+    width: 24,
+    height: 24,
+    borderWidth: 1.5,
+    borderColor: THEME.borders.color,
+  },
+  featureTextContainer: {
+    flex: 1,
+  },
+  featureTitle: {
+    fontSize: 14,
+    fontWeight: THEME.typography.fontWeightBold,
     color: THEME.colors.primary,
-    paddingVertical: 14,
-    paddingHorizontal: 12,
+    marginBottom: 2,
   },
-
-  // Error
-  errorBox: {
-    borderWidth: 2,
-    borderColor: THEME.colors.error,
-    borderRadius: 0,
-    backgroundColor: '#FFF5F5',
-    padding: 10,
-    marginTop: 12,
+  featureSubtitle: {
+    fontSize: 12,
+    fontWeight: THEME.typography.fontWeightRegular,
+    color: '#666666',
+    lineHeight: 16,
   },
-  errorText: {
-    fontSize: 13,
-    color: THEME.colors.error,
-    fontWeight: '400',
-  },
-
-  // Helper
-  helperText: {
-    fontSize: 11,
-    color: '#777777',
-    marginTop: 10,
-    marginBottom: 28,
-  },
-
-  // Button
   buttonShadow: {
-    backgroundColor: '#0D0D0D',
-    borderRadius: 0,
-    // The shadow sits behind the button — we use a wrapper with offset
-    // to create the neobrutalist hard shadow effect
-    shadowColor: '#0D0D0D',
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 4,
+    ...THEME.shadows.hard,
   },
   button: {
-    backgroundColor: THEME.colors.primary,
-    paddingVertical: 16,
+    backgroundColor: THEME.colors.accent,
+    paddingVertical: 18,
     borderWidth: THEME.borders.width,
     borderColor: THEME.borders.color,
     borderRadius: THEME.borders.radius,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
   buttonText: {
     fontSize: 16,
-    fontWeight: '700',
-    color: THEME.colors.headerText,
+    fontWeight: THEME.typography.fontWeightBold,
+    color: '#FFFFFF',
   },
 });

@@ -1,52 +1,64 @@
 export const THEME = {
   colors: {
-    background: '#FAFAF0',       // warm off-white
+    background: '#FAFAF0',
     surface: '#FFFFFF',
-    primary: '#0D0D0D',          // near-black for borders and text
-    accent: '#1B6B3A',           // deep Islamic green (used sparingly)
-    userBubble: '#0D0D0D',       // user message background
-    userBubbleText: '#FAFAF0',
-    aiBubble: '#FFFFFF',         // AI message background
+    primary: '#0D0D0D',
+    accent: '#1B6B3A',
+    accentLight: '#E8F5E9',
+    accentYellow: '#FFD60A',
+    accentCoral: '#FF6B6B',
+    accentBlue: '#4361EE',
+    userBubble: '#1B6B3A',
+    userBubbleText: '#FFFFFF',
+    aiBubble: '#FFFFFF',
     aiBubbleText: '#0D0D0D',
     inputBackground: '#FFFFFF',
     placeholder: '#888888',
-    headerBackground: '#0D0D0D',
-    headerText: '#FAFAF0',
+    headerBackground: '#1B6B3A',
+    headerText: '#FFFFFF',
+    chipBackground: '#FFD60A',
+    chipText: '#0D0D0D',
+    cardBorder: '#0D0D0D',
     error: '#D62828',
   },
-
   typography: {
     fontSizeSmall: 12,
     fontSizeBody: 15,
     fontSizeTitle: 18,
     fontSizeHeading: 22,
+    fontSizeLarge: 28,
     fontWeightRegular: '400' as const,
+    fontWeightMedium: '500' as const,
     fontWeightBold: '700' as const,
     fontWeightBlack: '900' as const,
   },
-
   spacing: {
     xs: 4,
     sm: 8,
     md: 16,
     lg: 24,
     xl: 32,
+    xxl: 48,
   },
-
   borders: {
     width: 2,
-    radius: 0,       // Neobrutalism uses 0 or near-0 radius
+    radius: 0,
     color: '#0D0D0D',
   },
-
   shadows: {
-    // Neobrutalism hard shadow (offset, not blur)
     hard: {
       shadowColor: '#0D0D0D',
       shadowOffset: { width: 3, height: 3 },
       shadowOpacity: 1,
       shadowRadius: 0,
-      elevation: 0,   // android
+      elevation: 4,
+    },
+    soft: {
+      shadowColor: '#0D0D0D',
+      shadowOffset: { width: 2, height: 2 },
+      shadowOpacity: 0.6,
+      shadowRadius: 0,
+      elevation: 2,
     },
   },
 };

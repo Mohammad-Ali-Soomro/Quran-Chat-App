@@ -11,41 +11,81 @@ interface MessageBubbleProps {
 }
 
 function LoadingDots() {
-  const opacity = useRef(new Animated.Value(1)).current;
+  const dot1 = useRef(new Animated.Value(0.3)).current;
+  const dot2 = useRef(new Animated.Value(0.3)).current;
+  const dot3 = useRef(new Animated.Value(0.3)).current;
 
   useEffect(() => {
-    const animation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(opacity, {
-          toValue: 0.3,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-      ])
-    );
-    animation.start();
+    const animateDot = (val: Animated.Value, delay: number) => {
+      return Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(val, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(val, {
+            toValue: 0.3,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+    };
 
-    return () => animation.stop();
-  }, [opacity]);
+    const a1 = animateDot(dot1, 0);
+    const a2 = animateDot(dot2, 150);
+    const a3 = animateDot(dot3, 300);
+
+    a1.start();
+    a2.start();
+    a3.start();
+
+    return () => {
+      a1.stop();
+      a2.stop();
+      a3.stop();
+    };
+  }, [dot1, dot2, dot3]);
 
   return (
-    <Animated.Text style={[styles.messageText, styles.aiText, { opacity }]}>
-      ...
-    </Animated.Text>
+    <View style={styles.loadingContainer}>
+      <Animated.View style={[styles.dot, { opacity: dot1 }]} />
+      <Animated.View style={[styles.dot, { opacity: dot2 }]} />
+      <Animated.View style={[styles.dot, { opacity: dot3 }]} />
+    </View>
   );
 }
 
 export default function MessageBubble({ message, isUser, isLoading }: MessageBubbleProps) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(10)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [fadeAnim, slideAnim]);
+
   return (
-    <View
+    <Animated.View
       style={[
         styles.bubble,
         isUser ? styles.userBubble : styles.aiBubble,
+        {
+          opacity: fadeAnim,
+          transform: [{ translateY: slideAnim }],
+        },
       ]}
     >
       {isLoading ? (
@@ -60,44 +100,56 @@ export default function MessageBubble({ message, isUser, isLoading }: MessageBub
           {message}
         </Text>
       )}
-    </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   bubble: {
     paddingVertical: 12,
-    paddingHorizontal: 14,
-    marginVertical: 6,
+    paddingHorizontal: 16,
+    marginVertical: 8,
     marginHorizontal: 16,
-    borderWidth: 2,
-    borderColor: '#0D0D0D',
-    borderRadius: 0,
-    shadowColor: '#0D0D0D',
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
+    borderWidth: THEME.borders.width,
+    borderColor: THEME.borders.color,
+    borderRadius: THEME.borders.radius,
+    ...THEME.shadows.hard,
   },
   userBubble: {
     alignSelf: 'flex-end',
-    backgroundColor: '#0D0D0D',
+    backgroundColor: THEME.colors.userBubble,
     maxWidth: SCREEN_WIDTH * 0.75,
   },
   aiBubble: {
     alignSelf: 'flex-start',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: THEME.colors.aiBubble,
     maxWidth: SCREEN_WIDTH * 0.8,
+    borderLeftWidth: 6,
+    borderLeftColor: THEME.colors.accent,
   },
   messageText: {
-    fontSize: 15,
+    fontSize: THEME.typography.fontSizeBody,
     lineHeight: 22,
-    fontWeight: '400',
+    fontWeight: THEME.typography.fontWeightRegular,
   },
   userText: {
-    color: '#FAFAF0',
+    color: THEME.colors.userBubbleText,
   },
   aiText: {
-    color: '#0D0D0D',
+    color: THEME.colors.aiBubbleText,
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 4,
+    width: 50,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: THEME.colors.accent,
   },
 });
