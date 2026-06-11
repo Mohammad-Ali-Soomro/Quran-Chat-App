@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { THEME } from '../constants/theme';
-import { sendMessage } from '../services/claudeApi';
+import { sendMessage } from '../services/groqApi';
 import Header from '../components/Header';
 import MessageBubble from '../components/MessageBubble';
 import ChatInput from '../components/ChatInput';
@@ -59,7 +59,7 @@ export default function ChatScreen({ navigation }: Props) {
   useEffect(() => {
     const loadApiKey = async () => {
       try {
-        const key = await AsyncStorage.getItem('claude_api_key');
+        const key = await AsyncStorage.getItem('groq_api_key');
         if (key) {
           apiKeyRef.current = key;
         }
@@ -95,7 +95,7 @@ export default function ChatScreen({ navigation }: Props) {
         style: 'destructive',
         onPress: async () => {
           try {
-            await AsyncStorage.removeItem('claude_api_key');
+            await AsyncStorage.removeItem('groq_api_key');
           } catch {
             // Ignore removal errors
           }

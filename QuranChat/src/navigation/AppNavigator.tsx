@@ -22,7 +22,7 @@ export default function AppNavigator() {
   useEffect(() => {
     const checkApiKey = async () => {
       try {
-        const key = await AsyncStorage.getItem('claude_api_key');
+        const key = await AsyncStorage.getItem('groq_api_key');
         setHasApiKey(!!key);
       } catch {
         setHasApiKey(false);

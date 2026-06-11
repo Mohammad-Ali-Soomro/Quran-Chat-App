@@ -36,15 +36,15 @@ export default function WelcomeScreen({ navigation }: Props) {
       return;
     }
 
-    if (!trimmed.startsWith('sk-ant-')) {
-      setError("That doesn't look like a valid Anthropic API key.");
+    if (!trimmed.startsWith('gsk_')) {
+      setError("That doesn't look like a valid Groq API key.");
       return;
     }
 
     setLoading(true);
 
     try {
-      await AsyncStorage.setItem('claude_api_key', trimmed);
+      await AsyncStorage.setItem('groq_api_key', trimmed);
       navigation.replace('Chat');
     } catch {
       setError('Failed to save API key. Please try again.');
@@ -74,7 +74,7 @@ export default function WelcomeScreen({ navigation }: Props) {
 
             {/* API Key Section */}
             <View style={styles.formSection}>
-              <Text style={styles.sectionLabel}>ANTHROPIC API KEY</Text>
+              <Text style={styles.sectionLabel}>GROQ API KEY</Text>
 
               <View style={styles.inputWrapper}>
                 <TextInput
@@ -84,7 +84,7 @@ export default function WelcomeScreen({ navigation }: Props) {
                     setApiKey(text);
                     if (error) setError('');
                   }}
-                  placeholder="sk-ant-..."
+                  placeholder="gsk_..."
                   placeholderTextColor={THEME.colors.placeholder}
                   secureTextEntry={true}
                   autoCapitalize="none"
@@ -102,7 +102,7 @@ export default function WelcomeScreen({ navigation }: Props) {
 
               {/* Helper Text */}
               <Text style={styles.helperText}>
-                Your key is stored locally and never sent anywhere except Anthropic.
+                Your key is stored locally and never sent anywhere except Groq.
               </Text>
 
               {/* Start Button */}
